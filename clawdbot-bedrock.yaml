@@ -74,12 +74,21 @@ Parameters:
       - "true"
       - "false"
 
+  EnableSandbox:
+    Type: String
+    Default: "true"
+    Description: "Install Docker for sandboxed execution (recommended for group chats)"
+    AllowedValues:
+      - "true"
+      - "false"
+
 Conditions:
   CreateEndpoints: !Equals [!Ref CreateVPCEndpoints, "true"]
   HasKeyPair: !Not [!Equals [!Ref KeyPairName, "none"]]
   AllowSSH: !And
     - !Not [!Equals [!Ref AllowedSSHCIDR, ""]]
     - !Not [!Equals [!Ref KeyPairName, "none"]]
+  EnableDocker: !Equals [!Ref EnableSandbox, "true"]
 
 Mappings:
   # Architecture detection based on instance type
@@ -390,12 +399,16 @@ Resources:
           echo "[3/9] Configuring SSM Agent..."
           snap start amazon-ssm-agent || systemctl start amazon-ssm-agent
           
-          # Install Docker
-          echo "[4/9] Installing Docker..."
-          curl -fsSL https://get.docker.com | sh
-          systemctl enable docker
-          systemctl start docker
-          usermod -aG docker ubuntu
+          # Install Docker (if EnableSandbox=true)
+          if [ "${EnableSandbox}" = "true" ]; then
+            echo "[4/9] Installing Docker..."
+            curl -fsSL https://get.docker.com | sh
+            systemctl enable docker
+            systemctl start docker
+            usermod -aG docker ubuntu
+          else
+            echo "[4/9] Skipping Docker (EnableSandbox=false)..."
+          fi
           
           # Install Node.js
           echo "[5/9] Installing Node.js..."
