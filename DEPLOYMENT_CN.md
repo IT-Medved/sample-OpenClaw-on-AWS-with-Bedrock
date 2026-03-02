@@ -234,9 +234,7 @@ https://awsmarketplace.amazonaws.cn/marketplace/pp/prodview-65lo53ldx6wda
 2. 登录 [AWS 中国区控制台](https://console.amazonaws.cn/)
 3. 进入 CloudFormation 服务
 4. 点击 **创建堆栈** → **上传模板文件** → 选择下载的 `clawdbot-china.yaml`
-5. 填写参数（参考下图）：
-
-![CloudFormation 控制台参数填写示意图](images/china-cfn-console-parameters.png)
+5. 填写参数：
 
 | 参数 | 说明 | 建议值 |
 |------|------|--------|
